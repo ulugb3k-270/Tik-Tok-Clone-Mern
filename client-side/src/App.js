@@ -1,26 +1,42 @@
 import "./App.css";
+
+// COMPONENTS
 import { Video } from "./Components";
 
+// HOOKS
+import { useEffect, useState } from "react";
+
+// AXIOS
+import axios from "./utils/axios";
+
 function App() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const res = await axios.get("/v2/posts");
+      setData(res.data);
+
+      return res;
+    };
+    fetchPosts();
+  }, []);
+
+  console.log(data);
   return (
     <div className="App">
       <div className="app__videos">
-        <Video
-          url={
-            "https://firebasestorage.googleapis.com/v0/b/shorturl-phototourl.appspot.com/o/message%2F3690244763%2Fimage?alt=media&token=d981c918-be27-4176-a07f-ca66063ea71a"
-          }
-          song={"Charlie"}
-          user={"Ulugbek"}
-          description={"This is a description"}
-          likes={200}
-          shares={300}
-          messages={400}
-        />
-        <Video
-          url={
-            "https://firebasestorage.googleapis.com/v0/b/shorturl-phototourl.appspot.com/o/message%2F3690244763%2Fimage?alt=media&token=d981c918-be27-4176-a07f-ca66063ea71a"
-          }
-        />
+        {data.map((video) => (
+          <Video
+            url={video.url}
+            song={video.song}
+            user={video.user}
+            description={video.description}
+            likes={video.likes}
+            shares={video.shares}
+            messages={video.messages}
+          />
+        ))}
       </div>
     </div>
   );
